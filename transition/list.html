@@ -12,41 +12,32 @@
         .list {padding:30px;background-color:#efefef;}
         .list li {list-style:none;border-bottom:1px solid #efefef;padding:10px;color:blue}
 
-        .list-enter-active {
-            transition: all 1s;
-        }
-
-        .list-enter {
-            color:red;
-            transform: translateY(50px);
-        }
-
-        .list-leave-active {
-            transition: all 3s;
-        }
-
-        .list-leave-to {
-            opacity: 0;
-            transform: translateY(50px);
-        }
-
     </style>
 </head>
 <body>
     <div id="app">
-        <input type="text" v-model:value="val" v-on:keyup.enter='keyEvent' />
+        <button type='button' v-on:click='animationEvent'>click</button>
         <transition-group appear
             name='list' 
-            tag='ul' 
+            tag='ul'
             class="list"
             @before-enter='beforeEnter'
             @enter="enter">
-            <li v-for="(list, index) in lists" v-bind:key='index'>
+            <li v-for="(list, index) in lists" v-bind:key='index' v-if='vos'>
                 <span>{{ index }}</span>
                 <span>{{ list.name }}</span>
                 <a href="#" v-on:click='deleteEvent(index)'>삭제</a>
             </li>
         </transition-group>
+
+        <!-- <transition
+            appear
+            @before-enter='beforeEnter'
+            @enter="enter">
+
+            <p v-if='vos'>list 입니다.</p>
+
+        </transition> -->
     </div>
 </body>
 <script>
@@ -55,31 +46,30 @@ var v = new Vue({
   el : '#app',
   data : function() {
     return {
-      val : '',
-      count : 0,
+      vos : true,
       lists : [
-          { id:0 , name:'list01', done:true },
-          { id:1 , name:'list02', done:true },
-          { id:2 , name:'list03', done:true },
-          { id:3 , name:'list04', done:true },
-          { id:4 , name:'list05', done:true }
+          { name : 'list01' },
+          { name : 'list02' },
+          { name : 'list03' },
+          { name : 'list04' },
+          { name : 'list05' },
       ]
     }
   },
   methods: {
-    keyEvent : function(e){
-        this.val = e.target.value;
-        this.count = this.lists.length;
-        this.lists.push({ id: this.count, name : this.val , done : false })
+    animationEvent : function(){
+        this.vos = false;
+        setTimeout(()=>{
+            this.vos = true;
+        })
     },
-    deleteEvent : function(index){
-        this.lists.splice(index,1);
+    beforeEnter : function(el){
+        el.style.opacity = 0;
     },
-    beforeEnter : function(){
-        console.log( "before enter" );
-    },
-    enter : function(){
-        console.log( 'enter' );
+    enter : function(el, done){
+        Velocity(el, { opacity: 0 }, { duration: 200 })
+        Velocity(el, { opacity: 0.7 }, { duration: 200 })
+        Velocity(el, { opacity: 1 }, { complete: done })
     }
 
   }
