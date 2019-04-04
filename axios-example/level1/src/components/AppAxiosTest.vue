@@ -52,8 +52,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 
 export default {
   data () {
@@ -81,7 +79,7 @@ export default {
       // })
 
       /* 별칭 메소드 */
-      axios.get('/api/contacts', {
+      this.$axios.get('/api/contacts', {
         params : { pageno : 1, pagesize : 5 }
       })
       .then( (response) => {
@@ -98,7 +96,7 @@ export default {
 
       console.log( '연락처 1건 추가' ); 
 
-      axios.post('/api/contacts', {
+      this.$axios.post('/api/contacts', {
         name : this.name,
         tel : this.tel,
         address : this.address
@@ -118,7 +116,7 @@ export default {
     fetchContactsOne(){
       console.log( '연락처 1건 조회' );
 
-      axios.get('/api/contacts/'+this.no)
+      this.$axios.get('/api/contacts/'+this.no)
         .then( ( response ) => {
           console.log(response);
           this.result = response.data;
@@ -133,7 +131,7 @@ export default {
     updateContact(){
       console.log( '연락처 수정' );
 
-      axios.put('/api/contacts/'+this.no, {
+      this.$axios.put('/api/contacts/'+this.no, {
         name : this.name,
         tel : this.tel,
         address : this.address
@@ -154,7 +152,7 @@ export default {
     deleteContact(){
       console.log( '연락처 삭제' )
 
-      axios.delete('/api/contacts/'+this.no)
+      this.$axios.delete('/api/contacts/'+this.no)
         .then((response)=>{
           console.log(response);
           this.no = 0;
@@ -173,7 +171,7 @@ export default {
       var file = this.$refs.photofile.files[0];
       data.append('photo', file);
 
-      axios.post('/api/contacts/'+this.no+'/photo', data)
+      this.$axios.post('/api/contacts/'+this.no+'/photo', data)
         .then((response)=>{
           this.result = response.data; 
         })
