@@ -1,14 +1,11 @@
 <template>
   <div>
-<<<<<<< HEAD
     <button v-on:click="show = !show">toggle</button>
     <transition appear name="fade">
       <p v-if="show">hello</p>
-=======
     <button v-on:click="show = !show">Toggle show</button>
     <transition name="bounce">
       <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
->>>>>>> cf0ae26c14d5614485be32315226b5f57dae53d9
     </transition>
   </div>
 </template>
