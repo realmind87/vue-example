@@ -52,16 +52,117 @@ export default {
     }
   },
   mounted(){
-
+    this.fetchContacts();
+    eventBus.$on('cancel' , ()=>{
+      this.currentView = null
+    })
+    eventBus.$on('addSubmit', ( contact )=>{
+      this.currentView = null;
+      this.addContact( contact )
+    })
+    eventBus.$on('updateSubmit', ( contact )=>{
+      this.currentView = null;
+      this.updateContact( contact );
+    })
+    eventBus.$on('addContactForm', ()=>{
+      this.currentView = 'addContact';
+    })
+    eventBus.$on('editContactForm', (no)=>{
+      fetchContactsOne( no );
+      this.currentView = 'updateContact';
+    })
+    eventBus.$on('deleteContact', (no)=>{
+      this.deleteContact( no );
+    })
+    eventBus.$on('editPhoto' , (no)=>{
+      fetchContactsOne( no );
+      this.currentView = 'updatePhoto'
+    })
+    eventBus.$on('updatePhoto' , (no, file)=>{
+      if( typeof file !== 'undefined' ) this.updatePhoto( no , file );
+      this.currentView = null;
+    })
   },
   computed : {
-
+    /* 계산형 속성 구할시 */
+    totalpage(){
+      return Math.floor((this.contactlist.totalcount - 1 ) / this.contactlist.pagesize) + 1
+    }
   },
   methods : {
-
+    pageChanged( page ){
+      this.contactlist.pageno = page;
+      this.fetchContacts();
+    },
+    fetchContacts(){
+      this.$axios.get( CONF.FETCH, {
+        params : {
+          pageno : this.contactlist.pageno,
+          pagesize : this.contactlist.pagesize
+        }
+      })
+      .then(( response )=>{
+        this.contactlist = response.data;
+      })
+      .catch(( ex )=>{
+        console.log( 'fetchContacts failed' , ex );
+        this.contactlist.contacts = [];
+      })
+    },
+    addContact( contact ){
+      this.$axios.post( CONF.ADD, contact)
+      .then(( response )=>{
+        this.contactlist.pageno = 1;
+        this.fetchContacts();
+      })
+      .catch(( ex )=>{
+        console.log( 'addContact failed' , ex );
+      })
+    },
+    updateContact( no ){
+      this.$axios.put( CONF.UPDATE.replace("${no}", contact.no), contact)
+      .then(( response )=>{
+        this.fetchContacts();
+      })
+      .catch((ex)=>{
+        console.log( 'updateContact failed' , ex );
+      })
+    },
+    fetchContactsOne( no ){
+      this.$axios.get( CONF.FETCH_ONE.replace("${no}", no ))
+      .then(( response )=>{
+        this.contact = response.data;
+      })
+      .catch((ex)=>{
+        console.log( 'fetchContactsOne failed' , ex );
+      })
+    },
+    deleteContact(no){
+      this.$axios.delete( CONF.DELETE.replace('${no}', no))
+      .then(( response )=>{
+        this.fetchContacts();
+      })
+      .catch(( ex )=>{
+        console.log( 'deleteContact failed' , ex );
+      })
+    },
+    updatePhoto(no , file){
+      var data = new FormData();
+      data.append( 'photo' , file );
+      this.$axios.post( CONF.UPDATE_PHOTO.replace( "${no}" , no ), data )
+      .then(( response )=>{
+        this.fetchContacts();
+      })
+      .catch(( ex )=>{
+        console.log( 'updatePhoto failed' , ex );
+      })
+    }
+    
   },
   watch : {
-
+    ['contactlist.pageno'](){
+      this.$refs.pagebuttons.selected = this.contactlist.pageno;
+    }
   }
 }
 </script>
