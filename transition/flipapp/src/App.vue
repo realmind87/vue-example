@@ -1,7 +1,7 @@
 <template>
   <div>
     <button v-on:click="show = !show">toggle</button>
-    <transition name="fade">
+    <transition appear name="fade">
       <p v-if="show">hello</p>
     </transition>
   </div>
