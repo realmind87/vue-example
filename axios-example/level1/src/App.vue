@@ -1,15 +1,43 @@
 <template>
   <div id="container">
-    <ContactList></ContactList>
+    <ContactList v-bind:contactlist='contactlist'></ContactList>
   </div>
 </template>
 
 <script>
+import CONF from './Config.js'
 import ContactList from './components/ContactList';
 export default {
   components : { ContactList },
-  methods: {
+  data(){
+    return { 
+      contactlist : {
+        pageno:1,
+        pagesize:CONF.PAGESIZE,
+        totalcount:0,
+        contacts:[]
+      }
+     } 
+  },
+  mounted() {
     
+  },
+  methods: {
+    fetchContacts(){
+      $axios.get( CONF.FETCH , {
+        params : {
+          pageno : this.contactlist.pageno,
+          pagesize : this.contactlist.pagesize
+        }
+      })
+      .then((res)=>{
+        this.contactlist = res.data;
+      })
+      .catch((e)=>{
+        console.log('fetchContacts failed', e);
+        this.contactlist.contacts = [];
+      })
+    }
   },
 }
 </script>
