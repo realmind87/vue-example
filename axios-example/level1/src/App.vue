@@ -5,8 +5,9 @@
 </template>
 
 <script>
-import CONF from './Config.js'
+import CONF from './Config'
 import ContactList from './components/ContactList';
+
 export default {
   components : { ContactList },
   data(){
@@ -19,12 +20,14 @@ export default {
       }
      } 
   },
-  mounted() {
-    
+  mounted () {
+    console.log( 'coasldkfkasld;f' );
+    this.fetchContacts();
   },
   methods: {
     fetchContacts(){
-      $axios.get( CONF.FETCH , {
+      
+      this.$axios.get( '/api/contacts' , {
         params : {
           pageno : this.contactlist.pageno,
           pagesize : this.contactlist.pagesize
@@ -38,7 +41,7 @@ export default {
         this.contactlist.contacts = [];
       })
     }
-  },
+  }
 }
 </script>
 
