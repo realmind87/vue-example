@@ -1,17 +1,12 @@
 <template>
   <div>
-    
+    ContactList
   </div>
 </template>
 
 <script>
 
-export default {
-  name : 'contactlist',
-  data () {
-    return {  }
-  }
-}
+export default { }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
